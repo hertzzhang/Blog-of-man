@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="content">
+    <div class="data_list">
+        <div class="data_list_title">
+            <i class="glyphicon glyphicon-th-large"></i> 博客信息
+        </div>
+        <div>
+            <div class="blog_title">
+                <h3>
+                    <strong th:text="${bloginformation.title}">标题</strong>
+                </h3>
+            </div>
+            <div class="blog_info">
+                发布时间：『<span th:text="${#dates.format(bloginformation.releasedate,'yyyy-MM-dd HH:mm:ss')}">日期</span>』&nbsp;&nbsp;
+                博客类别：<span th:text="${bloginformation.blogtype.typename}">类型名称</span>&nbsp;&nbsp;
+                阅读(<span th:text="${bloginformation.clickhit}">阅读数</span>)
+                评论(<span th:text="${bloginformation.replyhit}">评论</span>)
+            </div>
+            <div class="blog_content" th:utext="${bloginformation.content}">内容</div>
+            <div class="blog_keyWord">
+                <font><strong >关键字：</strong></font>
+                <font th:if="${keyword==null}">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;无关键字&nbsp;
+                </font>
+                <font th:if="${keyword!=null}" th:each="k:${keyword}">
+
+                    &nbsp;&nbsp;&nbsp;&nbsp;<a th:href="@{/bloginformation/indexkeyword?indexword=}+${k}" target="_blank" th:text="${k}">Java</a>&nbsp;&nbsp;
+                </font>
+
+            </div>
+            <div class="blog_lastAndNextPage" th:utext="${pagenumber}"></div>
+        </div>
+    </div>
+    <div class="data_list">
+        <div class="data_list_title">
+            <i class="glyphicon glyphicon-comment"></i> 评论信息
+        </div>
+        <div id="commentblock">
+            <div class="form-group">
+                <!-- 隐藏域,获取博客的id -->
+                <input id="blogId" type="hidden" th:value="${bloginformation.id}">
+                <textarea style="height: 100px;" id="comment" placeholder="来说两句吧..." class="form-control"></textarea>
+            </div>
+            <div class="form-group pull-right">
+                <button id="commentBtn" type="button" class="btn btn-success">评论</button>
+            </div>
+        </div>
+        <div class="commentDatas">
+            <div class="comment">
+                <div class="content text-center bg-info text-info">还没有评论，快来抢沙发吧！</div>
+            </div>
+            <div class="comment">
+                <div class="content bg-info text-info">
+                    <span >1</span>楼：
+                    <span>抢沙发....233333333~~</span>
+                    <span class="commentDate" >2019-06-05 19:30:32</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

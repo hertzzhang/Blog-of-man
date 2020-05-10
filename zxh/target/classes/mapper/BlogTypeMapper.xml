@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxh.dao.BlogtyperMapper">
+
+    <!-- 查询博客分类和该分类下文章的数量 -->
+    <select id="findBlogTypeNameandBlogCount" resultType="BlogType">
+        select bt.typename,count(bi.typeid) as blogcount,bt.id from blogtype as bt
+        LEFT JOIN  bloginformation as bi on bt.id=bi.typeid
+        GROUP BY bi.typeid
+    </select>
+</mapper>

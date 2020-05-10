@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<!--suppress ALL-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!-- 中间内容模块 -->
+<div id="content">
+    <div class="data_list">
+        <div class="data_list_title">
+            <i class="glyphicon glyphicon-th"></i> 最新博客
+        </div>
+        <div class="datas">
+            <ul>
+
+                <li style="margin-bottom: 30px" th:each="blogpage:${blogpagelist}">
+                          <span class="date">
+                              <!-- 使用 restful 风格 -->
+						 <a th:href="@{/bloginformation/view/}+${blogpage.id}" th:text="${#dates.format(blogpage.releasedate,'yyyy年MM月dd日')}">2019年06月11日</a>
+                          </span>
+                    <span class="title">
+                              <a  th:href="@{/bloginformation/view/}+${blogpage.id}"th:text="${blogpage.title}">${blogpage.title}</a>
+                          </span>
+                    <span class="summary" th:text="${blogpage.summary}">${blogpage.summary}</span>
+                    <!--  <span class="img">
+                               <a href="/blog/articles/524.html"><img src="1.jpg" title="1.jpg" alt="1.jpg"></a>
+                           </span>-->
+                    <span class="info">发表于
+							<span th:text="${#dates.format(blogpage.releasedate,'yyyy-MM-dd')}">2018-01-01</span>
+                              阅读(<span th:text="${blogpage.clickhit}">100</span>) 评论(<span th:text="${blogpage.replyhit}">10</span>)
+                          </span>
+                    <hr style="height: 5px; border: none; border-top: 1px dashed gray; padding-bottom: 10px;"/>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+    <div style="text-align: center">
+        <nav th:utext="${pagecode}"></nav>
+    </div>
+</div>
+</body>
+</html>

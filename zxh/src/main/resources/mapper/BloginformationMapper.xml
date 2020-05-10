@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxh.dao.BloginformationMapper">
+    <select id="findDateandDateNum" resultType="BlogInformation">
+        select DATE_FORMAT(releasedate,"%Y年%m月") as date,count(*) as datecount FROM bloginformation
+        GROUP BY DATE_FORMAT(releasedate,"%Y年%m月")
+        ORDER BY DATE_FORMAT(releasedate,"%Y年%m月") DESC
+    </select>
+    <resultMap id="bloginfoandblogtype" type="BlogInformation">
+        <id column="id" property="id"></id>
+        <result column="title" property="title"></result>
+        <result column="summary" property="summary"></result>
+        <result column="releasedate" property="releasedate"></result>
+        <result column="clickhit" property="clickhit"></result>
+        <result column="replyhit" property="replyhit"></result>
+        <result column="content" property="content"></result>
+        <result column="typeid" property="typeid"></result>
+        <result column="keyword" property="keyword"></result>
+        <association property="blogtype"  javaType="blogtype">
+            <id column="type_id" property="id"></id>
+            <result column="typename" property="typename"></result>
+        </association>
+    </resultMap>
+    <select id="findBloginformation" resultMap="bloginfoandblogtype">
+       select b.*,blogtype.id as type_id ,blogtype.typename from bloginformation as b
+       inner join blogtype on b.typeid=blogtype.id
+       <where>
+           <if test="blog.keyword!=null and blog.keyword!=''">
+           /*跟 like '%#{blog.keyword}%' 效果一样，但是防止了SQL注入*/
+             and  b.keyword like concat('%',#{blog.keyword},'%')
+           </if>
+           <if test="blog.typeid!=null">
+             and b.typeid=#{blog.typeid}
+           </if>
+           <if test="blog.date!=null and blog.date!=''">
+               and date_format(b.releasedate,"%Y年%m月")=#{blog.date}
+           </if>
+           <if test="blog.title!=null and blog.title!=''">
+               and  b.title like concat('%',#{blog.title},'%')
+           </if>
+       </where>
+       order by b.releasedate desc
+    </select>
+    <!-- 实现一对一查询。-->
+    <resultMap id="blogtypename" type="BlogInformation">
+        <id property="id" column="id"></id>
+        <result property="title" column="title"></result>
+        <result property="summary" column="summary"></result>
+        <result property="releasedate" column="releasedate"></result>
+        <result property="clickhit" column="clickhit"></result>
+        <result property="replyhit" column="replyhit"></result>
+        <result property="content" column="content"></result>
+        <result property="typeid" column="typeid"></result>
+        <result property="keyword" column="keyword"></result>
+        <association property="blogtype" javaType="blogtype">
+            <id property="id" column="tid"></id>
+            <result property="typename" column="typename"></result>
+        </association>
+    </resultMap>
+
+    <select id="findBlogId" parameterType="int" resultMap="blogtypename">
+        select bloginformation.* ,blogtype.id as tid, blogtype.typename as typename from bloginformation
+        INNER JOIN  blogtype ON bloginformation.typeid=blogtype.id
+        WHERE  bloginformation.id=#{id}
+    </select>
+    <!-- &lt;代表 < 符号  &gt; 代表 > 符号-->
+    <select id="findBeforeID" parameterType="int" resultType="BlogInformation">
+        select * from bloginformation WHERE id &lt; #{id} ORDER BY id DESC LIMIT 1
+    </select>
+    <select id="findAfterID" parameterType="int" resultType="BlogInformation">
+        select * from bloginformation WHERE id &gt; #{id} ORDER BY id ASC LIMIT 1
+    </select>
+
+</mapper>
